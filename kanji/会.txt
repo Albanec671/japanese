@@ -1,0 +1,3 @@
+meeting,meet,party,association,interview,join
+あ.う,あ.わせる,あつ.まる
+カイ,エ

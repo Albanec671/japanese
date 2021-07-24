@@ -1,0 +1,3 @@
+company,firm,office,association,shrine
+やしろ
+シャ

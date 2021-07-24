@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+#
+# read the data from the URL and print it
+#
+import urllib.request
+
+import sys
+# open a connection to a URL using urllib
+jisho_url_prefix = "https://jisho.org/search/"
+jisho_url_postfix = "%20%23kanji"
+
+kanji = sys.argv[1][0]
+val = urllib.parse.quote(kanji.encode('utf-8'))
+webUrl = urllib.request.urlopen(f'{jisho_url_prefix}{val}{jisho_url_postfix}')
+
+#get the result code and print it
+code = str(webUrl.getcode())
+
+# read the data from the URL and print it
+data = (webUrl.read())
+data = data.decode('Utf-8')
+
+temp = data.split("<div class=\"kanji details\">")[1]
+temp = temp.split("<div class=\"row\">")
+temp = temp[2]
+
+# Getting meanings
+meaning = temp.split("<div class=\"kanji-details__main-meanings\">")[1].split("</div>")[0]
+meaning = meaning.replace("\\n", "")
+meaning = meaning.replace("\n", "")
+meaning = meaning.replace(" ", "")
+meanings = meaning.split(",")
+meanings = ",".join(meanings)
+
+# Get kun yomi
+try:
+    kun = temp.split("<dl class=\"dictionary_entry kun_yomi\">")
+    mumble_jumble = kun[1].split("</dl>")[0]
+    kun = ",".join([v.split(">")[1].split("</a")[0] for v in mumble_jumble.split("a href")[1:]])
+except IndexError as e:
+    print(e)
+    kun = ""
+
+# for v in mumble_jumble.split("a href")[1:]:
+#     res = v.split(">")[1].split("</a")[0]
+#     print(res)
+
+# Get on yomi
+try:
+    on = temp.split("<dl class=\"dictionary_entry on_yomi\">")
+    mumble_jumble = on[-1].split("</dl>")[0]
+    on = ",".join([v.split(">")[1].split("</a")[0] for v in mumble_jumble.split("a href")[1:]])
+except IndexError as e:
+    print(e)
+    on = ""
+
+# for v in mumble_jumble.split("a href")[1:]:
+#     res = v.split(">")[1].split("</a")[0]
+#     print(res)
+
+with open(f'{kanji}.txt', 'w', encoding='utf-8') as file:
+    res = f"{meanings}\n{kun}\n{on}"
+    file.write(res)
+    file.close()
+
+# res = "\xe3\x81\xb2\xe3\x81\xa8"
+# res = "\xe3\x81\xb2\xe3\x81\xa8"
+# res = "-\xe3\x82\x8a"
+# res = res.encode('latin1')
+# print(res.decode('Utf-8'))
+
+

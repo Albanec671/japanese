@@ -1,0 +1,3 @@
+drink,smoke,take
+の.む,-の.み
+イン,オン
